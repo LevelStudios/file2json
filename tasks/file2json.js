@@ -68,7 +68,7 @@ module.exports = function(grunt) {
             }
             if(parts.length == templateCopy.length){
                 if(filepath){
-                    JSONstring += '\t"filepath": "'  + relative + "/" + fnSubs[i] + "/" + filenames[i] + '",\n';
+                    JSONstring += '\t"filepath": "'  + relative + "/" + fnSubs[i] + "/" + filenames[i] + '"\n';
                 }
 
                 writtenCount++;
@@ -108,11 +108,11 @@ module.exports = function(grunt) {
                 }
             }
             if(parts.length == templateCopy.length){
-
+                JSONstring += '\t"priority": true,\n';
                 if(filepath){
-                    JSONstring += '\t"filepath": "'  + relative + "/" + hpfnSubs[i] + "/" + hpfilenames[i] + '",\n';
+                    JSONstring += '\t"filepath": "'  + relative + "/" + hpfnSubs[i] + "/" + hpfilenames[i] + '"\n';
                 }
-                JSONstring += '\t"priority": "true"\n';
+                
                 writtenCount++;
                 JSONstring +=  '}';
                 if(i != hpfilenames.length - 1){
