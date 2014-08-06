@@ -18,20 +18,22 @@ module.exports = function(grunt) {
         src = this.data.src;
         dest = this.data.dest;
         priority = this.data.priority;
-        var filenames = [], hpfilenames = [];
+        var filenames = [], hpfilenames = [], fnSubs = [], hpfnSubs = [];
         var JSONstring;
+        var index = src.indexOf('/');
+        var relative = src.substring(index, src.length);
 
         grunt.file.recurse(src, function(abspath, rootdir, subdir, filename){
             var suffix = filename.substring(filename.length - 3, filename.length);
             if(suffix === ".md"){
                 if(subdir === priority){
                     hpfilenames.push(filename);
+                    hpfnSubs.push(subdir);
                 }else {
                     filenames.push(filename);
+                    fnSubs.push(subdir);
                 }
-
             }
-
         });
 
         JSONstring = "[\n{\n";
@@ -49,7 +51,7 @@ module.exports = function(grunt) {
             }
 
             locale += toTitleCase(parts[2].replace(/([.])/g,' ').substr(0,parts[2].length - 3)) + '",\n';
-            filename += src + "/" + filenames[i] + '"\n';
+            filename += relative + "/" + fnSubs[i] + "/" + filenames[i] + '"\n';
             //Put it all together
             JSONstring += division + title + locale + filename + '}';
             if(i != filenames.length - 2){
@@ -76,7 +78,8 @@ module.exports = function(grunt) {
           }
 
           locale += toTitleCase(parts[2].replace(/([.])/g,' ').substr(0,parts[2].length - 3)) + '",\n';
-          filename += src + "/" + hpfilenames[i] + '",\n';
+
+          filename += relative + "/" + hpfnSubs[i] + "/" + hpfilenames[i] + '",\n';
           //Put it all together
           JSONstring += division + title + locale + filename + priority + '}';
           if(i != hpfilenames.length - 1){
