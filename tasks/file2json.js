@@ -101,6 +101,7 @@ module.exports = function(grunt) {
             for(var j = 0; j < template.length; j++){
                 templateCopy[j] = template[j];
             }
+            var slug = filenames[i].replace(/([\-])/g,'_').replace(/\.(?!md)/g,'-').replace(/\.md/g, '').replace(/^[a-z\-]+_/g, '');
             var parts = hpfilenames[i].split("-");
             for(var j = 0; j < templateCopy.length; j++){
                 if(parts.length == templateCopy.length){
@@ -120,8 +121,10 @@ module.exports = function(grunt) {
             if(parts.length == templateCopy.length){
                 JSONstring += '\t"priority": true,\n';
                 if(filepath){
-                    JSONstring += '\t"filepath": "'  + relative + "/" + hpfnSubs[i] + "/" + hpfilenames[i] + '"\n';
+                    JSONstring += '\t"filepath": "'  + relative + "/" + hpfnSubs[i] + "/" + hpfilenames[i] + '",\n';
                 }
+
+                JSONstring += '\t"slug": "'  + slug + '"\n';
 
                 writtenCount++;
                 JSONstring +=  '}';
