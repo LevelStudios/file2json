@@ -1,7 +1,7 @@
 {
   "name": "grunt-file2json",
   "description": "Parses file names of a specific format into a  JSON file",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "homepage": "https://github.com/LevelStudios/file2json",
   "author": {
     "name": "Level Studios",
