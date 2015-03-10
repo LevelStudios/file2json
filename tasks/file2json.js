@@ -16,19 +16,24 @@ module.exports = function(grunt) {
     var filepath;
 
     grunt.registerMultiTask('file2json', 'Parses file names of a specific format into a  JSON file', function() {
-        src = this.data.src;
-        dest = this.data.dest;
-        priority = this.data.priority;
-        template = this.data.template.split("-");
-        filepath = this.data.filepath;
-        var writtenCount = 0;
-        var filenames = [], hpfilenames = [], fnSubs = [], hpfnSubs = [];
+
+        src                 = this.data.src;
+        dest                = this.data.dest;
+        priority            = this.data.priority;
+        template            = this.data.template.split("-");
+        filepath            = this.data.filepath;
         var JSONstring;
-        var index = src.indexOf('/');
-        var relative = src.substring(index, src.length);
+        var writtenCount    = 0;
+        var filenames       = [],
+            hpfilenames     = [],
+            fnSubs          = [],
+            hpfnSubs        = [];
+        var index           = src.indexOf('/');
+        var relative        = src.substring(index, src.length);
 
         grunt.file.recurse(src, function(abspath, rootdir, subdir, filename){
-            var suffix = filename.substring(filename.length - 3, filename.length);
+            var suffix      = filename.substring(filename.length - 3, filename.length);
+
             if(suffix === ".md"){
                 if(subdir === priority){
                     hpfilenames.push(filename);
@@ -45,11 +50,14 @@ module.exports = function(grunt) {
         }
 
         JSONstring = "[\n{\n";
+
         for(var i = 0; i < filenames.length; i++){
             var templateCopy = [];
+
             for(var j = 0; j < template.length; j++){
                 templateCopy[j] = template[j];
             }
+            var slug = filenames[i].replace(/([\-])/g,'_').replace(/\.(?!md)/g,'-').replace(/\.md/g, '').replace(/^[a-z\-]+_/g, '');
             var parts = filenames[i].split("-");
             for(var j = 0; j < templateCopy.length; j++){
                 if(parts.length == templateCopy.length){
@@ -63,13 +71,15 @@ module.exports = function(grunt) {
                         templateCopy[j] += toTitleCase(parts[j].replace(/([.])/g,' ')) + '",\n';
                     }
                     JSONstring += templateCopy[j];
-                    
+
                 }
             }
             if(parts.length == templateCopy.length){
                 if(filepath){
-                    JSONstring += '\t"filepath": "'  + relative + "/" + fnSubs[i] + "/" + filenames[i] + '"\n';
+                    JSONstring += '\t"filepath": "'  + relative + "/" + fnSubs[i] + "/" + filenames[i] + '",\n';
                 }
+
+                JSONstring += '\t"slug": "'  + slug + '"\n';
 
                 writtenCount++;
                 JSONstring +=  '}';
@@ -104,7 +114,7 @@ module.exports = function(grunt) {
                         templateCopy[j] += toTitleCase(parts[j].replace(/([.])/g,' ')) + '",\n';
                     }
                     JSONstring += templateCopy[j];
-                    
+
                 }
             }
             if(parts.length == templateCopy.length){
@@ -112,7 +122,7 @@ module.exports = function(grunt) {
                 if(filepath){
                     JSONstring += '\t"filepath": "'  + relative + "/" + hpfnSubs[i] + "/" + hpfilenames[i] + '"\n';
                 }
-                
+
                 writtenCount++;
                 JSONstring +=  '}';
                 if(i != hpfilenames.length - 1){
